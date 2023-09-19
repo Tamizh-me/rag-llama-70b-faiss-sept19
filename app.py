@@ -142,15 +142,10 @@ def process_llm_response(llm_response):
     print('\n\nSources:')
     for source in llm_response["source_documents"]:
         print(source.metadata['source'])
-
-   # full example
-query = "is it illegle to operate coal mines without license?"
-llm_response = qa_chain(query)
-process_llm_response(llm_response)     
+ 
 
 import gradio as gr
 
-# ... [your previous imports and code]
 
 def chatbot_response(input_text):
     llm_response = qa_chain(input_text)
@@ -162,13 +157,13 @@ def chatbot_response(input_text):
 def main():
     interface = gr.Interface(
         fn=chatbot_response, 
-        inputs=gr.inputs.Textbox(lines=5, placeholder="Type your query here..."),
+        inputs=gr.inputs.Textbox(lines=5, placeholder="Type your query here..." ,label="Question"),
         outputs=[
             gr.outputs.Textbox(label="Answer"),
             gr.outputs.Textbox(label="Sources")
         ],
         live=True,
-        title="Coal Mines Knowledge Chatbot",
+        title="Coal Mines Law Chatbot - SIH 1312",
         description="Ask any questions related to coal mines!"
     )
     interface.launch()

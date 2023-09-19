@@ -30,8 +30,6 @@ plain_faiss.save_local(faiss)
 
 reload_faiss = FAISS.load_local(faiss, embeddings=embedding)
 
-query = "What is Disbursement of amounts to the owners of coal mines"
-docs = reload_faiss.similarity_search(query)
 
 retriever = reload_faiss.as_retriever(search_kwargs={"k": 5})
 
