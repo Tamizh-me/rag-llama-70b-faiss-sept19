@@ -9,12 +9,10 @@ from langchain.chains import RetrievalQA
 from langchain.document_loaders import TextLoader
 
 
-# Initialize loaders and splitters
 loader = DirectoryLoader('docs', glob='./*.pdf', loader_cls=PyPDFLoader)
 documents = loader.load()
 len(documents)
 
-#splitting the text into
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 texts = text_splitter.split_documents(documents)
 

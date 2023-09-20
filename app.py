@@ -18,26 +18,15 @@ from dotenv import load_dotenv
 import os
 
 class TogetherLLM(LLM):
-    """Together large language models."""
-
     model: str = "togethercomputer/llama-2-70b-chat"
-    """model endpoint to use"""
-
     together_api_key: str = TOGETHER_API_KEY
-    """Together API key"""
-
     temperature: float = 0.7
-    """What sampling temperature to use."""
-
     max_tokens: int = 512
-    """The maximum number of tokens to generate in the completion."""
-
     class Config:
         extra = Extra.forbid
 
     @root_validator()
     def validate_environment(cls, values: Dict) -> Dict:
-        """Validate that the API key is set."""
         api_key = get_from_dict_or_env(
             values, "together_api_key", "TOGETHER_API_KEY"
         )
@@ -46,7 +35,6 @@ class TogetherLLM(LLM):
 
     @property
     def _llm_type(self) -> str:
-        """Return type of LLM."""
         return "together"
 
     def _call(
@@ -54,7 +42,6 @@ class TogetherLLM(LLM):
         prompt: str,
         **kwargs: Any,
     ) -> str:
-        """Call to Together endpoint."""
         together.api_key = self.together_api_key
         output = together.Complete.create(prompt,
                                           model=self.model,
@@ -63,9 +50,7 @@ class TogetherLLM(LLM):
                                           )
         text = output['output']['choices'][0]['text']
         return text
-    
-    ## Default LLaMA-2 prompt style
-B_INST, E_INST = "[INST]", "[/INST]"
+    B_INST, E_INST = "[INST]", "[/INST]"
 B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
 DEFAULT_SYSTEM_PROMPT = """\
 You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe. Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
@@ -114,25 +99,20 @@ chain_type_kwargs = {"prompt": llama_prompt}
 
 
 
-# create the chain to answer questions
 qa_chain = RetrievalQA.from_chain_type(llm=llm,
                                        chain_type="stuff",
                                        retriever=retriever,
                                        chain_type_kwargs=chain_type_kwargs,
                                        return_source_documents=True)
 
-## Cite sources
 
 import textwrap
 
 def wrap_text_preserve_newlines(text, width=110):
-    # Split the input text into lines based on newline characters
     lines = text.split('\n')
 
-    # Wrap each line individually
     wrapped_lines = [textwrap.fill(line, width=width) for line in lines]
 
-    # Join the wrapped lines back together using newline characters
     wrapped_text = '\n'.join(wrapped_lines)
 
     return wrapped_text
