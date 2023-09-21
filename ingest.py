@@ -9,12 +9,10 @@ from langchain.chains import RetrievalQA
 from langchain.document_loaders import TextLoader
 
 
-# Initialize loaders and splitters
 loader = DirectoryLoader('docs', glob='./*.pdf', loader_cls=PyPDFLoader)
 documents = loader.load()
 len(documents)
 
-#splitting the text into
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 texts = text_splitter.split_documents(documents)
 
@@ -24,13 +22,9 @@ embedding = instructor_embeddings
 faiss= 'faiss_db'
 
 plain_faiss = FAISS.from_documents(documents=texts, embedding=embedding)
-
 plain_faiss.save_local(faiss)
 
-
 reload_faiss = FAISS.load_local(faiss, embeddings=embedding)
-
-
 retriever = reload_faiss.as_retriever(search_kwargs={"k": 5})
 
 
